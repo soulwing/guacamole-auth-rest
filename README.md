@@ -1,7 +1,7 @@
 guacamole-auth-rest
 ===================
 
-An auth provider extension for [Guacamole](http://guacamole.apahe.org) that 
+An auth provider extension for [Guacamole](http://guacamole.apache.org) that 
 delegates to a simple REST API.
 
 
