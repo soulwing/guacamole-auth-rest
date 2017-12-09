@@ -86,7 +86,9 @@ The structure of each _connection resource_ is as follows.
 
 The parameter names and corresponding value types are protocol-specific, and are 
 typically defined and described in the Guacamole documentation for a supported 
-protocol. The value data types may be either strings, numbers, or booleans.
+protocol. The value data types may be either strings, numbers, or booleans. This
+structure corresponds to the [GuacamoleConfiguration](http://guacamole.apache.org/doc/guacamole-common/org/apache/guacamole/protocol/GuacamoleConfiguration.html) defined in 
+[guacamole-common](http://guacamole.apache.org/doc/guacamole-common).
 
 ### Client Authentication
 
