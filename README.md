@@ -24,6 +24,7 @@ The entity body for the request will contain a _subject_ as follows.
 ```
 {
   "username": "<user name of the subject>",
+  "password": "<password for the user, if any>",
   "remoteAddress": "<network address at which the subject is located, if available>",
   "remoteHostname": "<network host at which the subject is located, if available>",
   "request": {      // details of the HTTP request
