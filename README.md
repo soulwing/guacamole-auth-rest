@@ -175,7 +175,8 @@ The access token may also issue an authentication challenge by responding with
 a 401 status code and including a `WWW-Authenticate` header. In this case the
 only supported authentication types are HTTP Basic and Digest authentication,
 and the provider will response to the challenge using the corresponding 
-configuration properties as given in [Basic Authentication Properties](#basic-authentication-properties)
+configuration properties as given in 
+[Basic Authentication Properties](#basic-authentication-properties)
 and [Digest Authentication Properties](#digest-authentication-properties).
 
 * `auth-rest-oauth2-service-url` -- The absolute URL for the access token 
