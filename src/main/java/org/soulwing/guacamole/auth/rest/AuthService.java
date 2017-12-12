@@ -20,6 +20,7 @@ package org.soulwing.guacamole.auth.rest;
 
 import java.util.Map;
 
+import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.auth.Credentials;
 
 /**
@@ -29,6 +30,17 @@ import org.apache.guacamole.net.auth.Credentials;
  * service defined in the top level README.
  */
 interface AuthService {
+
+  /**
+   * Initializes the service using the given configuration.
+   *
+   * @param config
+   *   Configuration for the service.
+   *
+   * @throws GuacamoleException
+   *   If an error occurs in initializing the service.
+   */
+  void init(AuthServiceConfig config) throws GuacamoleException;
 
   /**
    * Requests authorization of a user subject identified by the given

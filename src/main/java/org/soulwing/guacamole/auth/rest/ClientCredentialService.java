@@ -26,6 +26,17 @@ import org.apache.guacamole.GuacamoleException;
 interface ClientCredentialService {
 
   /**
+   * Initializes the service using the given configuration.
+   *
+   * @param config
+   *    Configuration for the service.
+   *
+   * @throws GuacamoleException
+   *    If an error occurs in initializing the service.
+   */
+  void init(ClientCredentialServiceConfig config) throws GuacamoleException;
+
+  /**
    * Gets the most recently acquired credential.
    *
    * @return

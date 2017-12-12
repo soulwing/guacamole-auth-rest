@@ -29,10 +29,10 @@ import org.apache.guacamole.net.auth.simple.SimpleAuthenticationProvider;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 
 /**
- * An {@link AuthenticationProvider} that delegates to an {@link AuthService}.
- *
+ * An {@link AuthenticationProvider} that delegates to an {@link AuthService}
+ * to authenticate and authorize Guacamole users.
  */
-public class RestAuthenticationProvider extends SimpleAuthenticationProvider {
+public class RestAuthProvider extends SimpleAuthenticationProvider {
 
   /** Auth service facade to which we delegate the real work. */
   private final AuthService authService;
@@ -43,8 +43,11 @@ public class RestAuthenticationProvider extends SimpleAuthenticationProvider {
   /**
    * Constructs a new instance that delegates to the default {@link AuthService}
    * and {@link ClientCredentialService} implementations.
+   *
+   * @throws GuacamoleException
+   *    If the provider could not be instantiated due to an error.
    */
-  public RestAuthenticationProvider() {
+  public RestAuthProvider() throws GuacamoleException {
     throw new UnsupportedOperationException();
   }
 
@@ -57,13 +60,27 @@ public class RestAuthenticationProvider extends SimpleAuthenticationProvider {
    *
    * @param credentialService
    *    The client credential service delegate.
+   *
+   * @throws GuacamoleException
+   *    If the service could not be instantiated due to an error.
    */
-  RestAuthenticationProvider(AuthService authService,
-      ClientCredentialService credentialService) {
+  RestAuthProvider(AuthService authService,
+      ClientCredentialService credentialService) throws GuacamoleException {
+
+    final RestEnvironment environment = new RestEnvironment();
     this.authService = authService;
     this.credentialService = credentialService;
+
+    this.authService.init(environment);
+    this.credentialService.init(environment);
   }
 
+  /**
+   * Gets the identifier of this provider.
+   *
+   * @return
+   *    The provider identifier.
+   */
   @Override
   public String getIdentifier() {
     return getClass().getSimpleName();

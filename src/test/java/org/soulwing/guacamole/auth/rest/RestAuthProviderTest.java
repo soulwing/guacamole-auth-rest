@@ -19,7 +19,9 @@
 package org.soulwing.guacamole.auth.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -38,20 +40,21 @@ import org.mockito.junit.MockitoRule;
 import org.mockito.quality.Strictness;
 
 /**
- * Unit tests for {@link RestAuthenticationProvider}.
+ * Unit tests for {@link RestAuthProvider}.
  *
  * @author Carl Harris
  */
-public class RestAuthenticationProviderTest {
+public class RestAuthProviderTest {
 
-  private static final String PROTOCOL_NAME = "some protocol";
   private static final String CONFIG_NAME = "some name";
-  private static final String NUMBER_PARAM_NAME = "number param";
-  private static final int NUMBER_PARAM_VALUE = -1;
-  private static final boolean BOOLEAN_PARAM_VALUE = true;
+  private static final String PROTOCOL_NAME = "some protocol";
+  private static final String STRING_PARAM_NAME = "string param";
   private static final String STRING_PARAM_VALUE = "some string";
   private static final String BOOLEAN_PARAM_NAME = "boolean param";
-  private static final String STRING_PARAM_NAME = "string param";
+  private static final boolean BOOLEAN_PARAM_VALUE = true;
+  private static final String NUMBER_PARAM_NAME = "number param";
+  private static final int NUMBER_PARAM_VALUE = -1;
+
   @Rule
   public final MockitoRule rule =
       MockitoJUnit.rule().strictness(Strictness.STRICT_STUBS);
@@ -68,13 +71,14 @@ public class RestAuthenticationProviderTest {
   @Mock
   private ClientCredential clientCredential;
 
-  private RestAuthenticationProvider provider;
+  private RestAuthProvider provider;
 
   @Before
   public void setUp() throws Exception {
-    provider = new RestAuthenticationProvider(authService, credentialService);
+    provider = new RestAuthProvider(authService, credentialService);
+    verify(authService).init(any(AuthServiceConfig.class));
+    verify(credentialService).init(any(ClientCredentialServiceConfig.class));
   }
-
 
   @Test(expected = GuacamoleServerException.class)
   public void testWhenAuthServiceThrowsClientException()
@@ -161,6 +165,7 @@ public class RestAuthenticationProviderTest {
     when(authService.authorize(credentials, clientCredential))
         .thenReturn(authResult);
 
-    provider.getAuthorizedConfigurations(credentials); }
+    provider.getAuthorizedConfigurations(credentials);
+  }
 
 }
