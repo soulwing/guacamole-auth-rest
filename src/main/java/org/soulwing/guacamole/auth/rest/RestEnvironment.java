@@ -33,13 +33,13 @@ class RestEnvironment implements AuthServiceConfig {
   /**
    * Default value for the {@link #AUTHORIZATION_URI} property.
    */
-  static final String DEFAULT_AUTHORIZATION_URI = "/authorization";
+  private static final String DEFAULT_AUTHORIZATION_URI = "/authorization";
 
   /**
    * Property that specifies the absolute URL for the REST service used to
    * authorize subject users.
    */
-  static final GuacamoleProperty<String> SERVICE_URL =
+  private static final GuacamoleProperty<String> SERVICE_URL =
       new StringGuacamoleProperty() {
     @Override
     public String getName() {
@@ -51,7 +51,7 @@ class RestEnvironment implements AuthServiceConfig {
    * Property that specifies the URI path for the authorization resource
    * exposed by the REST service.
    */
-  static final GuacamoleProperty<String> AUTHORIZATION_URI =
+  private static final GuacamoleProperty<String> AUTHORIZATION_URI =
       new StringGuacamoleProperty() {
     @Override
     public String getName() {
@@ -62,7 +62,7 @@ class RestEnvironment implements AuthServiceConfig {
   /**
    * Property that specifies the username to be used for Basic authentication.
    */
-  static final GuacamoleProperty<String> BASIC_USERNAME =
+  private static final GuacamoleProperty<String> BASIC_USERNAME =
       new StringGuacamoleProperty() {
     @Override
     public String getName() {
@@ -73,7 +73,7 @@ class RestEnvironment implements AuthServiceConfig {
   /**
    * Property that specifies the password to be used for Basic authentication.
    */
-  static final GuacamoleProperty<String> BASIC_PASSWORD =
+  private static final GuacamoleProperty<String> BASIC_PASSWORD =
       new StringGuacamoleProperty() {
     @Override
     public String getName() {
@@ -84,7 +84,7 @@ class RestEnvironment implements AuthServiceConfig {
   /**
    * Property that specifies the username to be used for Digest authentication.
    */
-  static final GuacamoleProperty<String> DIGEST_USERNAME =
+  private static final GuacamoleProperty<String> DIGEST_USERNAME =
       new StringGuacamoleProperty() {
     @Override
     public String getName() {
@@ -95,7 +95,7 @@ class RestEnvironment implements AuthServiceConfig {
   /**
    * Property that specifies the password to be used for Digest authentication.
    */
-  static final GuacamoleProperty<String> DIGEST_PASSWORD =
+  private static final GuacamoleProperty<String> DIGEST_PASSWORD =
       new StringGuacamoleProperty() {
     @Override
     public String getName() {
@@ -103,6 +103,9 @@ class RestEnvironment implements AuthServiceConfig {
     }
   };
 
+  /**
+   * The delegate Guacamole environment.
+   */
   private final Environment delegate;
 
   /**
@@ -122,7 +125,7 @@ class RestEnvironment implements AuthServiceConfig {
    * @param delegate
    *    The delegate environment.
    */
-  RestEnvironment(Environment delegate) {
+  private RestEnvironment(Environment delegate) {
     this.delegate = delegate;
   }
 
