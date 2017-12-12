@@ -37,12 +37,9 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
   /** Auth service facade to which we delegate the real work. */
   private final AuthService authService;
 
-  /** Client credentialing service. */
-  private final ClientCredentialService credentialService;
-
   /**
    * Constructs a new instance that delegates to the default {@link AuthService}
-   * and {@link ClientCredentialService} implementations.
+   * implementation.
    *
    * @throws GuacamoleException
    *    If the provider could not be instantiated due to an error.
@@ -52,27 +49,18 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
   }
 
   /**
-   * Constructs a new instance that delegates to the given {@link AuthService}
-   * and {@link ClientCredentialService}.
+   * Constructs a new instance that delegates to the given {@link AuthService}.
    *
    * @param authService
    *    The auth service delegate.
    *
-   * @param credentialService
-   *    The client credential service delegate.
-   *
    * @throws GuacamoleException
    *    If the service could not be instantiated due to an error.
    */
-  RestAuthProvider(AuthService authService,
-      ClientCredentialService credentialService) throws GuacamoleException {
-
+  RestAuthProvider(AuthService authService) throws GuacamoleException {
     final RestEnvironment environment = new RestEnvironment();
     this.authService = authService;
-    this.credentialService = credentialService;
-
     this.authService.init(environment);
-    this.credentialService.init(environment);
   }
 
   /**
@@ -90,47 +78,19 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
   @SuppressWarnings("unchecked")
   public Map<String, GuacamoleConfiguration> getAuthorizedConfigurations(
       Credentials credentials) throws GuacamoleException {
-    Map authResult = authorizeSubject(credentials);
+
+    final Map authResult = authService.authorize(
+        new DelegatingAuthSubject(credentials));
+
     final Boolean authorized = (Boolean) authResult.get(
         ProtocolConstants.AUTH_KEY);
+
     if (authorized == null || !authorized) return null;
+
     return createGuacConfigs(
         (Map) authResult.get(ProtocolConstants.CONFIGS_KEY));
   }
 
-  private Map authorizeSubject(Credentials subjectCredentials)
-      throws GuacamoleException {
-    try {
-      return authorizeSubject(subjectCredentials,
-          credentialService.currentCredential());
-    }
-    catch (UnauthorizedClientException ex1) {
-      try {
-        return authorizeSubject(subjectCredentials,
-            credentialService.acquireCredential(ex1.getChallenge()));
-      }
-      catch (UnauthorizedClientException ex2) {
-        throw new GuacamoleServerException(
-            "provider client authentication failed");
-      }
-    }
-  }
-
-  private Map authorizeSubject(Credentials subjectCredentials,
-      ClientCredential clientCredential) throws GuacamoleException,
-      UnauthorizedClientException {
-    try {
-      return authService.authorize(subjectCredentials, clientCredential);
-    }
-    catch (ClientException ex) {
-      throw new GuacamoleServerException(
-          "provider error when contacting REST service", ex);
-    }
-    catch (ServiceException ex) {
-      throw new GuacamoleServerException(
-          "REST service error", ex);
-    }
-  }
 
   private Map<String, GuacamoleConfiguration> createGuacConfigs(
       Map configs) throws GuacamoleServerException {

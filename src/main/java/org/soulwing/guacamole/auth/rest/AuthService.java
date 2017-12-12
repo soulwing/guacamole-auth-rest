@@ -21,7 +21,6 @@ package org.soulwing.guacamole.auth.rest;
 import java.util.Map;
 
 import org.apache.guacamole.GuacamoleException;
-import org.apache.guacamole.net.auth.Credentials;
 
 /**
  * A service that authenticates and authorizes users.
@@ -46,30 +45,15 @@ interface AuthService {
    * Requests authorization of a user subject identified by the given
    * credentials.
    *
-   * @param subjectCredentials
-   *   Credentials to use in identifying, authenticating, and authorizing the
-   *   user.
-   *
-   * @param clientCredential
-   *   Credential to use in authentication the provider as a client of the
-   *   service.
+   * @param subject
+   *   The subject to be authorized.
    *
    * @return
    *   A map representation of the authorization response structure.
    *
-   * @throws UnauthorizedClientException
-   *   If the provider (acting in the client role) must authenticate in order
-   *   to successfully complete an authorization request.
-   *
-   * @throws ClientException
-   *   If the service reports an error caused by the client (other than
-   *   the need to authenticate itself).
-   *
-   * @throws ServiceException
-   *   If the service reports an internal error (not caused by the client).
+   * @throws GuacamoleException
+   *   If an error occurs in getting the authorization result.
    */
-  Map authorize(Credentials subjectCredentials,
-      ClientCredential clientCredential) throws UnauthorizedClientException,
-      ClientException, ServiceException;
+  Map authorize(AuthSubject subject) throws GuacamoleException;
 
 }

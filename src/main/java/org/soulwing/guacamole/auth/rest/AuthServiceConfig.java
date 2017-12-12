@@ -52,4 +52,52 @@ interface AuthServiceConfig {
    */
   String getAuthorizationUri() throws GuacamoleException;
 
+  /**
+   * Gets the username to present in response to an authentication challenge
+   * specifying Basic authentication.
+   *
+   * @return
+   *    The username.
+   *
+   * @throws GuacamoleException
+   *    If no username is configured or an error occurs in retrieving it.
+   */
+  String getBasicUsername() throws GuacamoleException;
+
+  /**
+   * Gets the password to present in response to an authentication challenge
+   * specifying Basic authentication.
+   *
+   * @return
+   *    The password.
+   *
+   * @throws GuacamoleException
+   *    If no password is configured on an error occurs in retrieving it.
+   */
+  String getBasicPassword() throws GuacamoleException;
+
+  /**
+   * Gets the username to present in response to an authentication challenge
+   * specifying Digest authentication.
+   *
+   * @return
+   *    The username.
+   *
+   * @throws GuacamoleException
+   *    If no username is configured or an error occurs in retrieving it.
+   */
+  String getDigestUsername() throws GuacamoleException;
+
+  /**
+   * Gets the password to present in response to an authentication challenge
+   * specifying Digest authentication.
+   *
+   * @return
+   *    The password.
+   *
+   * @throws GuacamoleException
+   *    If no password is configured or an error occurs in retrieving it.
+   */
+  String getDigestPassword() throws GuacamoleException;
+
 }

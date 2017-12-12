@@ -20,7 +20,6 @@ package org.soulwing.guacamole.auth.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,56 +59,31 @@ public class RestAuthProviderTest {
       MockitoJUnit.rule().strictness(Strictness.STRICT_STUBS);
 
   @Mock
-  private Credentials credentials;
-
-  @Mock
   private AuthService authService;
 
-  @Mock
-  private ClientCredentialService credentialService;
-
-  @Mock
-  private ClientCredential clientCredential;
+  // not an interface, so we really shouldn't mock it
+  private Credentials credentials = new Credentials();
 
   private RestAuthProvider provider;
 
   @Before
   public void setUp() throws Exception {
-    provider = new RestAuthProvider(authService, credentialService);
+    provider = new RestAuthProvider(authService);
     verify(authService).init(any(AuthServiceConfig.class));
-    verify(credentialService).init(any(ClientCredentialServiceConfig.class));
   }
 
-  @Test(expected = GuacamoleServerException.class)
-  public void testWhenAuthServiceThrowsClientException()
-      throws Exception {
-    when(credentialService.currentCredential()).thenReturn(clientCredential);
-    doThrow(new ClientException())
-        .when(authService).authorize(credentials, clientCredential);
-    provider.getAuthorizedConfigurations(credentials);
-  }
-
-  @Test(expected = GuacamoleServerException.class)
-  public void testWhenAuthServiceThrowsServerException()
-      throws Exception {
-    when(credentialService.currentCredential()).thenReturn(clientCredential);
-    doThrow(new ServiceException())
-        .when(authService).authorize(credentials, clientCredential);
-    provider.getAuthorizedConfigurations(credentials);
-  }
 
   @Test
   public void testWhenNotAuthorized() throws Exception {
-    when(credentialService.currentCredential()).thenReturn(clientCredential);
-    when(authService.authorize(credentials, clientCredential))
+    when(authService.authorize(any(DelegatingAuthSubject.class)))
         .thenReturn(Collections.singletonMap(ProtocolConstants.AUTH_KEY, false));
     assertThat(provider.getAuthorizedConfigurations(credentials)).isNull();
   }
 
   @Test
   public void testWhenAuthorizedFlagMissing() throws Exception {
-    when(credentialService.currentCredential()).thenReturn(clientCredential);
-    when(authService.authorize(credentials, clientCredential))
+    when(authService.authorize(any(DelegatingAuthSubject.class)
+    ))
         .thenReturn(Collections.emptyMap());
     assertThat(provider.getAuthorizedConfigurations(credentials)).isNull();
   }
@@ -131,11 +105,8 @@ public class RestAuthProviderTest {
     authResult.put(ProtocolConstants.CONFIGS_KEY,
         Collections.singletonMap(CONFIG_NAME, config));
 
-    when(credentialService.currentCredential())
-        .thenReturn(clientCredential);
-    when(authService.authorize(credentials, clientCredential))
+    when(authService.authorize(any(DelegatingAuthSubject.class)))
         .thenReturn(authResult);
-
 
     final Map<String, GuacamoleConfiguration> guacConfigs =
         provider.getAuthorizedConfigurations(credentials);
@@ -160,9 +131,7 @@ public class RestAuthProviderTest {
     Map<String, Object> authResult = new LinkedHashMap<>();
     authResult.put(ProtocolConstants.AUTH_KEY, true);
 
-    when(credentialService.currentCredential())
-        .thenReturn(clientCredential);
-    when(authService.authorize(credentials, clientCredential))
+    when(authService.authorize(any(DelegatingAuthSubject.class)))
         .thenReturn(authResult);
 
     provider.getAuthorizedConfigurations(credentials);

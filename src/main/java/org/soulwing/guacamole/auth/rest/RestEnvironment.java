@@ -28,8 +28,7 @@ import org.apache.guacamole.properties.StringGuacamoleProperty;
  * Definitions for all of the configuration properties required and/or
  * supported by this extension.
  */
-class RestEnvironment
-    implements AuthServiceConfig, ClientCredentialServiceConfig {
+class RestEnvironment implements AuthServiceConfig {
 
   /**
    * Default value for the {@link #AUTHORIZATION_URI} property.
@@ -61,17 +60,6 @@ class RestEnvironment
   };
 
   /**
-   * Property that specifies a realm name to match for Basic authentication.
-   */
-  static final GuacamoleProperty<String> BASIC_REALM =
-      new StringGuacamoleProperty() {
-    @Override
-    public String getName() {
-      return "auth-rest-basic-realm";
-    }
-  };
-
-  /**
    * Property that specifies the username to be used for Basic authentication.
    */
   static final GuacamoleProperty<String> BASIC_USERNAME =
@@ -94,17 +82,6 @@ class RestEnvironment
   };
 
   /**
-   * Property that specifies a realm name to match for Digest authentication.
-   */
-  static final GuacamoleProperty<String> DIGEST_REALM =
-      new StringGuacamoleProperty() {
-    @Override
-    public String getName() {
-      return "auth-rest-digest-realm";
-    }
-  };
-
-  /**
    * Property that specifies the username to be used for Digest authentication.
    */
   static final GuacamoleProperty<String> DIGEST_USERNAME =
@@ -123,28 +100,6 @@ class RestEnvironment
     @Override
     public String getName() {
       return "auth-rest-digest-password";
-    }
-  };
-
-  /**
-   * Property that specifies a realm name to match for OAuth2 authentication.
-   */
-  static final GuacamoleProperty<String> OAUTH2_REALM =
-      new StringGuacamoleProperty() {
-        @Override
-        public String getName() {
-          return "auth-rest-oauth2-realm";
-        }
-      };
-
-  /**
-   * Property that specifies the URL for the OAuth2 access token service.
-   */
-  static final GuacamoleProperty<String> OAUTH2_SERVICE_URL =
-      new StringGuacamoleProperty() {
-    @Override
-    public String getName() {
-      return "auth-rest-oauth2-service-url";
     }
   };
 
@@ -204,22 +159,6 @@ class RestEnvironment
   }
 
   /**
-   * Gets the realm name to match in an authentication challenge that specifies
-   * Basic authentication.
-   *
-   * @return
-   *    The realm name or null if not configured
-   *
-   * @throws GuacamoleException
-   *    If an error occurs in retrieving the realm name from the delegate
-   *    environment.
-   */
-  @Override
-  public String getBasicRealm() throws GuacamoleException {
-    return delegate.getProperty(BASIC_REALM);
-  }
-
-  /**
    * Gets the username to present in response to an authentication challenge
    * specifying Basic authentication.
    *
@@ -252,22 +191,6 @@ class RestEnvironment
   }
 
   /**
-   * Gets the realm name to match in an authentication challenge that specifies
-   * Digest authentication.
-   *
-   * @return
-   *    The realm name or null if not configured
-   *
-   * @throws GuacamoleException
-   *    If an error occurs in retrieving the realm name from the delegate
-   *    environment.
-   */
-  @Override
-  public String getDigestRealm() throws GuacamoleException {
-    return delegate.getProperty(DIGEST_REALM);
-  }
-
-  /**
    * Gets the username to present in response to an authentication challenge
    * specifying Digest authentication.
    *
@@ -297,37 +220,6 @@ class RestEnvironment
   @Override
   public String getDigestPassword() throws GuacamoleException {
     return delegate.getRequiredProperty(DIGEST_PASSWORD);
-  }
-
-  /**
-   * Gets the realm name to match in an authentication challenge that specifies
-   * OAuth2 bearer authentication.
-   *
-   * @return
-   *    The realm name or null if not configured
-   *
-   * @throws GuacamoleException
-   *    If an error occurs in retrieving the property value from the delegate
-   *    environment.
-   */
-  @Override
-  public String getOAuth2Realm() throws GuacamoleException {
-    return delegate.getProperty(OAUTH2_REALM);
-  }
-
-  /**
-   * Gets the URL for the OAuth2 access token service.
-   *
-   * @return
-   *    The URL.
-   *
-   * @throws GuacamoleException
-   *    If no URL is configured or an error occurs in retrieving it from the
-   *    delegate environment.
-   */
-  @Override
-  public String getOAuth2ServiceUrl() throws GuacamoleException {
-    return delegate.getRequiredProperty(OAUTH2_SERVICE_URL);
   }
 
 }
