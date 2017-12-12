@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.guacamole.net.auth.Credentials;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,11 +36,6 @@ import org.mockito.quality.Strictness;
  */
 public class DelegatingAuthSubjectTest {
 
-  private static final String USERNAME = "username";
-  private static final String PASSWORD = "password";
-  private static final String REMOTE_ADDRESS = "remoteAddress";
-  private static final String REMOTE_HOSTNAME = "remoteHostname";
-
   private static final String HEADER_NAME = "headerName";
   private static final String HEADER_VALUE = "headerValue";
 
@@ -52,31 +46,23 @@ public class DelegatingAuthSubjectTest {
   @Mock
   private HttpServletRequest request;
 
-  private Credentials credentials = new Credentials();
-
-  private DelegatingAuthSubject subject = new DelegatingAuthSubject(credentials);
-
   @Test
   public void testSimpleProperties() throws Exception {
-    credentials.setUsername(USERNAME);
-    credentials.setPassword(PASSWORD);
-    credentials.setRemoteAddress(REMOTE_ADDRESS);
-    credentials.setRemoteHostname(REMOTE_HOSTNAME);
-
-    assertThat(subject.getUsername()).isEqualTo(USERNAME);
-    assertThat(subject.getPassword()).isEqualTo(PASSWORD);
-    assertThat(subject.getRemoteAddress()).isEqualTo(REMOTE_ADDRESS);
-    assertThat(subject.getRemoteHostname()).isEqualTo(REMOTE_HOSTNAME);
+    final AuthSubject subject = AuthSubjectUtil.newAuthSubject(request);
+    assertThat(subject.getUsername()).isEqualTo(AuthSubjectUtil.USERNAME);
+    assertThat(subject.getPassword()).isEqualTo(AuthSubjectUtil.PASSWORD);
+    assertThat(subject.getRemoteAddress()).isEqualTo(AuthSubjectUtil.REMOTE_ADDRESS);
+    assertThat(subject.getRemoteHostname()).isEqualTo(AuthSubjectUtil.REMOTE_HOSTNAME);
   }
 
   @Test
   public void testHeadersProperty() throws Exception {
-    credentials.setRequest(request);
     when(request.getHeaderNames()).thenReturn(
         Collections.enumeration(Collections.singletonList(HEADER_NAME)));
     when(request.getHeaders(HEADER_NAME)).thenReturn(
         Collections.enumeration(Collections.singletonList(HEADER_VALUE)));
 
+    final AuthSubject subject = AuthSubjectUtil.newAuthSubject(request);
     assertThat(subject.getHeaders()).containsKey(HEADER_NAME);
     assertThat(subject.getHeaders().get(HEADER_NAME)).containsExactly(HEADER_VALUE);
   }
