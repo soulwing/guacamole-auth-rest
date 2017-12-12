@@ -53,6 +53,17 @@ interface AuthServiceConfig {
   String getAuthorizationUri() throws GuacamoleException;
 
   /**
+   * Gets a flag indicating whether Basic authentication is configured.
+   *
+   * @return
+   *    Flag state.
+   *
+   * @throws GuacamoleException
+   *    If an error occurs in determining the flag state.
+   */
+  boolean isBasicConfigured() throws GuacamoleException;
+
+  /**
    * Gets the username to present in response to an authentication challenge
    * specifying Basic authentication.
    *
@@ -75,6 +86,17 @@ interface AuthServiceConfig {
    *    If no password is configured on an error occurs in retrieving it.
    */
   String getBasicPassword() throws GuacamoleException;
+
+  /**
+   * Gets a flag indicating whether Digest authentication is configured.
+   *
+   * @return
+   *    Flag state.
+   *
+   * @throws GuacamoleException
+   *    If an error occurs in determining the flag state.
+   */
+  boolean isDigestConfigured() throws GuacamoleException;
 
   /**
    * Gets the username to present in response to an authentication challenge

@@ -159,6 +159,21 @@ class RestEnvironment implements AuthServiceConfig {
   }
 
   /**
+   * Gets a flag indicating whether Basic authentication is configured.
+   *
+   * @return
+   *    Flag state.
+   *
+   * @throws GuacamoleException
+   *    If an error occurs in determining the flag state from the delegate
+   *    environment.
+   */
+  @Override
+  public boolean isBasicConfigured() throws GuacamoleException {
+    return delegate.getProperty(BASIC_USERNAME) != null;
+  }
+
+  /**
    * Gets the username to present in response to an authentication challenge
    * specifying Basic authentication.
    *
@@ -188,6 +203,21 @@ class RestEnvironment implements AuthServiceConfig {
   @Override
   public String getBasicPassword() throws GuacamoleException {
     return delegate.getRequiredProperty(BASIC_PASSWORD);
+  }
+
+  /**
+   * Gets a flag indicating whether Digest authentication is configured.
+   *
+   * @return
+   *    Flag state.
+   *
+   * @throws GuacamoleException
+   *    If an error occurs in determining the flag state from the delegate
+   *    environment.
+   */
+  @Override
+  public boolean isDigestConfigured() throws GuacamoleException {
+    return delegate.getProperty(DIGEST_USERNAME) != null;
   }
 
   /**
