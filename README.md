@@ -14,7 +14,7 @@ are necessary to authenticate the subject and to determine the Guacamole
 connection resources that are authorized for the user and returns a JSON 
 object describing the result. 
 
-### GET /authorization
+### POST /authorization
 
 Authenticates a _subject_ and determines the subject's authorized resources,
 returning an _authorization result_.
@@ -29,15 +29,15 @@ The entity body for the request will contain a _subject_ as follows.
   "remoteHostname": "<network host at which the subject is located, if available>",
   "request": {      // details of the HTTP request
     "headers": [
-      "<single-valued header name>": "<value>"
-      "<multi-valued header name>": [ "<value>", ... ]
+      "<header name>": [ "<value>", ... ]
     ]
   }
 }
 ```
   
 Note that because a given HTTP header may have multiple values, the object
-associated with a header name may be either a string or an array of strings.
+associated with a header name is an array of strings, even if there is just 
+one value for a given header name.
 
 The structure of the _subject_ corresponds to the 
 [Credentials](http://guacamole.apache.org/doc/guacamole-ext/org/apache/guacamole/net/auth/Credentials.html)
@@ -107,7 +107,7 @@ header which describes the authentication challenge. The auth provider will
 utilize this header to determine how to authenticate itself and will make a
 subsequent request with an appropriate `Authorization` header.
 
-In the case of OAuth 2, the provider implementation will make use of the `realm` 
+In the case of OAuth2, the provider implementation will make use of the `realm` 
 parameter given in the `WWW-Authenticate` header in determining where to make 
 the request for an access token. If the `realm` parameter starts with an `http:` 
 or `https:` scheme and otherwise has the form of an HTTP URL, it will make a 
