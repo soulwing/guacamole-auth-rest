@@ -144,11 +144,6 @@ environment as `AUTH_REST_SERVICE_URL`.
 The auth provider can authenticate itself to the REST service using HTTP Basic
 authentication.
 
-* `auth-rest-basic-realm` -- The expected Realm name that will be sent by the
-  REST service in the `WWW-Authenticate` header. If specified, the auth provider
-  will authenticate to the service only if the Realm matches exactly. If not
-  specified, the auth provider will authenticate regardless of the specified
-  Realm.
 * `auth-rest-basic-username` -- The username to send in the response to a
   Basic authentication challenge.
 * `auth-rest-basic-password` -- The password to send in the response to a
@@ -159,11 +154,6 @@ authentication.
 The auth provider can authenticate itself to the REST service using HTTP Digest
 authentication.
 
-* `auth-rest-digest-realm` -- The expected Realm name that will be sent by the
-  REST service in the `WWW-Authenticate` header. If specified, the auth provider
-  will authenticate to the service only if the Realm matches exactly. If not
-  specified, the auth provider will authenticate regardless of the specified
-  Realm.
 * `auth-rest-digest-username` -- The username to send in the response to a
   Digest authentication challenge.
 * `auth-rest-digest-password` -- The password to use in computing the response
@@ -192,8 +182,4 @@ and [Digest Authentication Properties](#digest-authentication-properties).
   service. This property is used only if the authentication challenge given
   in the `WWW-Authenticate` header contains a `Realm` that is *not* a valid
   HTTP URL.
-* `auth-rest-oauth2-realm` -- The expected Realm name that will be sent by the
-  REST service in the `WWW-Authenticate` header. If specified, the auth 
-  provider will make a request to access token service only if the Realm name
-  exactly matches this value.
                                               
