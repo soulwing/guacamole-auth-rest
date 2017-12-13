@@ -27,12 +27,16 @@ import org.apache.guacamole.net.auth.AuthenticationProvider;
 import org.apache.guacamole.net.auth.Credentials;
 import org.apache.guacamole.net.auth.simple.SimpleAuthenticationProvider;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An {@link AuthenticationProvider} that delegates to an {@link AuthService}
  * to authenticate and authorize Guacamole users.
  */
 public class RestAuthProvider extends SimpleAuthenticationProvider {
+
+  private static final Logger logger = LoggerFactory.getLogger(RestAuthProvider.class);
 
   /** Auth service facade to which we delegate the real work. */
   private final AuthService authService;
@@ -45,7 +49,7 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
    *    If the provider could not be instantiated due to an error.
    */
   public RestAuthProvider() throws GuacamoleException {
-    throw new UnsupportedOperationException();
+    this(new JerseyAuthService());
   }
 
   /**
@@ -58,9 +62,16 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
    *    If the service could not be instantiated due to an error.
    */
   RestAuthProvider(AuthService authService) throws GuacamoleException {
-    final RestEnvironment environment = new RestEnvironment();
-    this.authService = authService;
-    this.authService.init(environment);
+    try {
+      final RestEnvironment environment = new RestEnvironment();
+      this.authService = authService;
+      this.authService.init(environment);
+    }
+    catch (GuacamoleException ex) {
+      logger.error("@@@@@@@@@@@@@@@ init error: {}", ex, ex);
+      throw ex;
+    }
+
   }
 
   /**
@@ -79,16 +90,23 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
   public Map<String, GuacamoleConfiguration> getAuthorizedConfigurations(
       Credentials credentials) throws GuacamoleException {
 
-    final Map authResult = authService.authorize(
-        new DelegatingAuthSubject(credentials));
+    logger.info("@@@@@@@@@@@@ entering REST provider");
+    try {
+      final Map authResult = authService.authorize(
+          new DelegatingAuthSubject(credentials));
 
-    final Boolean authorized = (Boolean) authResult.get(
-        ProtocolConstants.AUTH_KEY);
+      final Boolean authorized = (Boolean) authResult.get(
+          ProtocolConstants.AUTH_KEY);
 
-    if (authorized == null || !authorized) return null;
+      if (authorized == null || !authorized) return null;
 
-    return createGuacConfigs(
-        (Map) authResult.get(ProtocolConstants.CONFIGS_KEY));
+      return createGuacConfigs(
+          (Map) authResult.get(ProtocolConstants.CONFIGS_KEY));
+    }
+    catch (GuacamoleException ex) {
+      logger.error("@@@@@@@@@@@@@@ error: {}: ", ex, ex);
+      throw ex;
+    }
   }
 
 
@@ -100,7 +118,7 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
     }
 
     final Map<String, GuacamoleConfiguration> guacConfigs =
-        new LinkedHashMap<>();
+        new LinkedHashMap<String, GuacamoleConfiguration>();
 
     for (final Object name : configs.keySet()) {
       guacConfigs.put(name.toString(),

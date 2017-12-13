@@ -90,16 +90,16 @@ public class RestAuthProviderTest {
 
   @Test
   public void testWhenAuthorized() throws Exception {
-    Map<String, Object> params = new LinkedHashMap<>();
+    Map<String, Object> params = new LinkedHashMap<String, Object>();
     params.put(STRING_PARAM_NAME, STRING_PARAM_VALUE);
     params.put(BOOLEAN_PARAM_NAME, BOOLEAN_PARAM_VALUE);
     params.put(NUMBER_PARAM_NAME, NUMBER_PARAM_VALUE);
 
-    Map<String, Object> config = new LinkedHashMap<>();
+    Map<String, Object> config = new LinkedHashMap<String, Object>();
     config.put(ProtocolConstants.PROTOCOL_KEY, PROTOCOL_NAME);
     config.put(ProtocolConstants.PARAMS_KEY, params);
 
-    Map<String, Object> authResult = new LinkedHashMap<>();
+    Map<String, Object> authResult = new LinkedHashMap<String, Object>();
     authResult.put(ProtocolConstants.AUTH_KEY, true);
 
     authResult.put(ProtocolConstants.CONFIGS_KEY,
@@ -128,7 +128,7 @@ public class RestAuthProviderTest {
 
   @Test(expected = GuacamoleServerException.class)
   public void testWhenAuthorizedButConfigsMissing() throws Exception {
-    Map<String, Object> authResult = new LinkedHashMap<>();
+    Map<String, Object> authResult = new LinkedHashMap<String, Object>();
     authResult.put(ProtocolConstants.AUTH_KEY, true);
 
     when(authService.authorize(any(DelegatingAuthSubject.class)))

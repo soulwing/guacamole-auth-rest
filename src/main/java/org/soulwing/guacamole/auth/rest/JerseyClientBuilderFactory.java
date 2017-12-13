@@ -18,17 +18,15 @@
  */
 package org.soulwing.guacamole.auth.rest;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Feature;
 
 import org.apache.guacamole.GuacamoleException;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import com.sun.jersey.api.client.filter.HTTPDigestAuthFilter;
 
 /**
- * A {@link JerseyClientFactory} that constructs new {@link Client} instances
- * using the Jersey {@link ClientBuilder} API.
+ * A {@link JerseyClientFactory} that constructs new Jersey {@link Client}
+ * instances.
  */
 class JerseyClientBuilderFactory implements JerseyClientFactory {
 
@@ -46,55 +44,35 @@ class JerseyClientBuilderFactory implements JerseyClientFactory {
    */
   @Override
   public Client newClient(AuthServiceConfig config) throws GuacamoleException {
-    return ClientBuilder.newClient(newConfig(config));
+    final Client client = Client.create();
+    addAuthFilters(client, config);
+    return client;
   }
 
   /**
-   * Creates a Jersey client configuration from the given auth service
-   * configuration.
-   *
-   * @param config
-   *    The auth service configuration that will be inspected to determine
-   *    the appropriate client configuration.
-   *
-   * @return
-   *    A newly instantiated Jersey client configuration
-   *
-   * @throws GuacamoleException
-   *    If an error occurs in creating the client configuration.
-   */
-  private ClientConfig newConfig(AuthServiceConfig config)
-      throws GuacamoleException {
-    final ClientConfig clientConfig = new ClientConfig();
-    clientConfig.register(newAuthenticationFeature(config));
-    return clientConfig;
-  }
-
-  /**
-   * Creates a Jersey {@link Feature} supporting HTTP Basic and Digest
+   * Adds authentication filters supporting HTTP Basic and Digest
    * authentication using credentials supplied in the given configuration.
+   *
+   * @param client
+   *    The client to which filters will be added.
+   *
    * @param config
    *    Configuration which contains the credentials to be used.
    *
-   * @return
    * @throws GuacamoleException
+   *    If an error occurs in obtaining the configuration properties needed
+   *    to configure authentication filters.
    */
-  private Feature newAuthenticationFeature(AuthServiceConfig config)
+  private void addAuthFilters(Client client, AuthServiceConfig config)
       throws GuacamoleException {
-
-    final HttpAuthenticationFeature.UniversalBuilder builder =
-        HttpAuthenticationFeature.universalBuilder();
-
     if (config.isBasicConfigured()) {
-      builder.credentialsForBasic(config.getBasicUsername(),
-          config.getBasicPassword());
+      client.addFilter(new HTTPBasicAuthFilter(config.getBasicUsername(),
+          config.getBasicPassword()));
     }
     if (config.isDigestConfigured()) {
-      builder.credentialsForDigest(config.getDigestUsername(),
-          config.getDigestPassword());
+      client.addFilter(new HTTPDigestAuthFilter(config.getDigestUsername(),
+          config.getDigestPassword()));
     }
-    return builder.build();
-
   }
 
 }

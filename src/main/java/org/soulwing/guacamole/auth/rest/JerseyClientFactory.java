@@ -18,9 +18,8 @@
  */
 package org.soulwing.guacamole.auth.rest;
 
-import javax.ws.rs.client.Client;
-
 import org.apache.guacamole.GuacamoleException;
+import com.sun.jersey.api.client.Client;
 
 /**
  * A factory that produces Jersey {@link Client} instances.

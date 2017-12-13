@@ -19,15 +19,12 @@
 package org.soulwing.guacamole.auth.rest;
 
 import java.util.Map;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.ServerErrorException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleServerException;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
  * An {@link AuthService} implemented using the Jersey REST client API.
@@ -98,25 +95,19 @@ class JerseyAuthService implements AuthService {
    *    A map representation of the JSON structure of the auth response.
    *
    * @throws GuacamoleException
-   *    If no request is made due to an error in preparing the request.
+   *    If the request failed due an error reported by the REST service.
    */
   @Override
   public Map authorize(AuthSubject subject) throws GuacamoleException {
     try {
-      return marshaller.toMap(client.target(config.getServiceUrl())
+      return marshaller.toMap(client.resource(config.getServiceUrl())
           .path(config.getAuthorizationUri())
-          .request(MediaType.APPLICATION_JSON)
-          .post(Entity.json(marshaller.toJson(subject)), String.class));
+          .type(MediaType.APPLICATION_JSON)
+          .accept(MediaType.APPLICATION_JSON)
+          .post(String.class, marshaller.toJson(subject)));
     }
-    catch (ClientErrorException ex) {
-      throw new GuacamoleServerException(
-          "provider error when contacting REST service", ex);
-    }
-    catch (ServerErrorException ex) {
+    catch (UniformInterfaceException ex) {
       throw new GuacamoleServerException("REST service error", ex);
-    }
-    catch (WebApplicationException ex) {
-      throw new GuacamoleServerException("REST error", ex);
     }
   }
 

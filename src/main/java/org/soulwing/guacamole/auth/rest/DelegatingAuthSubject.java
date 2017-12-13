@@ -138,7 +138,8 @@ public class DelegatingAuthSubject implements AuthSubject {
    */
   private Map<String, List<String>> createHeaderMap(
       HttpServletRequest request) {
-    final Map<String, List<String>> map = new LinkedHashMap<>();
+    final Map<String, List<String>> map =
+        new LinkedHashMap<String, List<String>>();
     final Enumeration headers = request.getHeaderNames();
     while (headers.hasMoreElements()) {
       final String name = (String) headers.nextElement();
@@ -147,7 +148,7 @@ public class DelegatingAuthSubject implements AuthSubject {
         final String value = (String) values.nextElement();
         List<String> list = map.get(name);
         if (list == null) {
-          list = new ArrayList<>();
+          list = new ArrayList<String>();
           map.put(name, list);
         }
         list.add(value);
