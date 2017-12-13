@@ -68,10 +68,12 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
       this.authService.init(environment);
     }
     catch (GuacamoleException ex) {
-      logger.error("@@@@@@@@@@@@@@@ init error: {}", ex, ex);
+      logger.error("initialization failed with error: {}", ex);
+      if (logger.isDebugEnabled()) {
+        logger.debug("exception trace: {}", ex, ex);
+      }
       throw ex;
     }
-
   }
 
   /**
@@ -89,14 +91,23 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
   @SuppressWarnings("unchecked")
   public Map<String, GuacamoleConfiguration> getAuthorizedConfigurations(
       Credentials credentials) throws GuacamoleException {
-
-    logger.info("@@@@@@@@@@@@ entering REST provider");
     try {
+      if (logger.isDebugEnabled()) {
+        logger.debug("requesting authorization for user '{}' @ {} [{}]",
+            credentials.getUsername(), credentials.getRemoteHostname(),
+            credentials.getRemoteAddress());
+      }
+
       final Map authResult = authService.authorize(
           new DelegatingAuthSubject(credentials));
 
       final Boolean authorized = (Boolean) authResult.get(
           ProtocolConstants.AUTH_KEY);
+
+      if (logger.isDebugEnabled()) {
+        logger.debug("user '{}' {} authorized", credentials.getUsername(),
+            authorized ? "is" : "is not");
+      }
 
       if (authorized == null || !authorized) return null;
 
@@ -104,7 +115,10 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
           (Map) authResult.get(ProtocolConstants.CONFIGS_KEY));
     }
     catch (GuacamoleException ex) {
-      logger.error("@@@@@@@@@@@@@@ error: {}: ", ex, ex);
+      logger.error("authorized request ended in error {}: ", ex);
+      if (logger.isDebugEnabled()) {
+        logger.debug("exception trace: {}", ex, ex);
+      }
       throw ex;
     }
   }
@@ -114,6 +128,7 @@ public class RestAuthProvider extends SimpleAuthenticationProvider {
       Map configs) throws GuacamoleServerException {
 
     if (configs == null) {
+      logger.error("REST service provided no configurations for user");
       throw new GuacamoleServerException("configurations required");
     }
 
