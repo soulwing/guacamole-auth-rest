@@ -34,12 +34,9 @@ class AuthSubjectUtil {
   static final String REMOTE_HOSTNAME = "remoteHostname";
 
   public static AuthSubject newAuthSubject(HttpServletRequest request) {
-    final Credentials credentials = new Credentials();
-    credentials.setUsername(USERNAME);
-    credentials.setPassword(PASSWORD);
+    final Credentials credentials = new Credentials(USERNAME, PASSWORD, request);
     credentials.setRemoteAddress(REMOTE_ADDRESS);
     credentials.setRemoteHostname(REMOTE_HOSTNAME);
-    credentials.setRequest(request);
 
     return new DelegatingAuthSubject(credentials);
   }

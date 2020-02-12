@@ -22,10 +22,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.net.auth.Credentials;
@@ -62,7 +65,7 @@ public class RestAuthProviderTest {
   private AuthService authService;
 
   // not an interface, so we really shouldn't mock it
-  private Credentials credentials = new Credentials();
+  private Credentials credentials = new Credentials("user", "pass", mock(HttpServletRequest.class));
 
   private RestAuthProvider provider;
 
