@@ -1,5 +1,5 @@
 {
-  "guacamoleVersion": "0.9.13-incubating",
+  "guacamoleVersion": "1.1.0",
   "name": "Guacamole Auth REST",
   "namespace": "org.soulwing",
   "authProviders": [
