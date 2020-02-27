@@ -4,6 +4,22 @@ guacamole-auth-rest
 An auth provider extension for [Guacamole](http://guacamole.apache.org) that 
 delegates to a simple REST API.
 
+## Installation
+
+Build the extension using Maven:
+```
+mvn package
+```
+
+After the build the extension and its dependencies will be in the `target/`
+directory of the build.
+
+Install into GUACAMOLE_HOME:
+
+```
+cp target/guacamole-auth-rest-1.0.0-SNAPSHOT.jar $GUACAMOLE_HOME/extensions/
+cp target/dependency/* $GUACAMOLE_HOME/lib/
+```
 
 ## REST API Specification
 
